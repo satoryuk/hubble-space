@@ -1,79 +1,82 @@
-import React, { useState } from "react";
-import Navbar from "../Navbar";
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
-// Accept width and height as props
-const MissionSummarize = ({ width = 28, height = 28 }) => {
-  const [isZoomed, setIsZoomed] = useState(false);
+const MissionSummarize = () => {
+  const { id } = useParams(); // Get the mission id from the URL
+  const [mission, setMission] = useState(null);
 
-  const imageUrl =
-    "https://wallpapers.com/images/featured/4k-oaax18kaapkokaro.jpg";
+  // Fetch mission details using the id
+  useEffect(() => {
+    const fetchMissionDetails = async () => {
+      try {
+        const response = await fetch(`https://api.spacexdata.com/v4/launches/${id}`); // Fetch details for a specific mission
+        const data = await response.json();
+        setMission(data); // Set the fetched mission data
+      } catch (error) {
+        console.error("Error fetching mission details:", error);
+      }
+    };
+
+    fetchMissionDetails();
+  }, [id]); // Re-fetch the data whenever the id changes
+
+  if (!mission) {
+    return <div>Loading...</div>; // Display loading until data is fetched
+  }
 
   return (
-    <div>
+    <div className="p-8 max-w-screen-md mx-auto">
+      <h1 className="text-4xl font-bold text-center">{mission.name}</h1>
       
-      <div className="flex flex-col items-center justify-center bg-gray-100 p-4">
-        {/* Mission Image */}
-        <div>
-          <img
-            src={imageUrl}
-            alt="Mission Patch"
-            className="cursor-pointer object-contain hover:scale-105 transition-transform duration-300"
-            onClick={() => setIsZoomed(true)}
-            style={{ width: `${width}rem`, height: `${height}rem` }} // Use the passed sizes
-          />
-        </div>
+      {/* Mission Image */}
+      <img
+        src={mission.links.patch.small || "https://via.placeholder.com/150"}
+        alt={mission.name}
+        className="mt-4 max-w-xs mx-auto object-contain"
+      />
+      
+      {/* Mission Details */}
+      <p className="mt-4 text-lg text-justify">{mission.details}</p>
+      
+      {/* Additional Mission Information */}
+      <div className="mt-6">
+        <h2 className="text-2xl font-semibold">Mission Information</h2>
+        <ul className="list-disc pl-5">
+          <li><strong>Launch Date:</strong> {new Date(mission.date_utc).toLocaleDateString()}</li>
+          <li><strong>Success:</strong> {mission.success ? "Yes" : "No"}</li>
+          
+          {/* Rocket Information */}
+          {mission.rocket && (
+            <li>
+              <strong>Rocket:</strong> {mission.rocket.name} ({mission.rocket.type})
+            </li>
+          )}
 
-        {/* Mission Details Box */}
-        <div className="w-full max-w-3xl border border-black hover:border-blue-500 transition-colors duration-300 rounded-lg shadow-lg mt-4">
-          <div className="bg-blue-900 text-white text-center py-2 rounded-t-lg font-semibold">
-            FalconSat
-          </div>
-          <div className="bg-gray-100 p-4 text-gray-800 text-center">
-            <p>
-              <strong className="text-red-600">Flight Number:</strong> 1
-            </p>
-            <p>
-              <strong className="text-red-600">Launch Year:</strong> 2006
-            </p>
-            <p>
-              <strong className="text-red-600">Launch Date:</strong> 2006-03-25T10:30:00+12:00
-            </p>
-            <p>
-              <strong className="text-red-600">Rocket Name:</strong> Falcon 1
-            </p>
-            <p>
-              <strong className="text-red-600">Launch Site:</strong> Kwajalein Atoll Omelek Island
-            </p>
-            <p>
-              <strong className="text-red-600">Launch Success:</strong> False
-            </p>
-            <p>
-              <strong className="text-red-600">Land Success:</strong> False
-            </p>
-            <p>
-              <strong className="text-red-600">Details:</strong> None
-            </p>
-          </div>
-        </div>
+          {/* Payload Information */}
+          {mission.payloads && mission.payloads.length > 0 && (
+            <li>
+              <strong>Payload:</strong> {mission.payloads.map((payload) => (
+                <div key={payload.id}>
+                  <p>{payload.name} - {payload.type}</p>
+                  <p>{payload.orbit}</p>
+                </div>
+              ))}
+            </li>
+          )}
 
-        {/* Fullscreen Image Modal */}
-        {isZoomed && (
-          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-            <div className="relative">
-              <button
-                className="absolute top-2 right-2 text-white text-2xl font-bold"
-                onClick={() => setIsZoomed(false)}
-              >
-                ×
-              </button>
-              <img
-                src={imageUrl}
-                alt="Zoomed Mission Patch"
-                className="max-w-full max-h-screen object-contain"
-              />
-            </div>
-          </div>
-        )}
+          {/* Links */}
+          {mission.links && mission.links.article && (
+            <li>
+              <a href={mission.links.article} target="_blank" rel="noopener noreferrer" className="text-blue-600">Read more about the mission</a>
+            </li>
+          )}
+
+          {mission.links && mission.links.webcast && (
+            <li>
+              <a href={mission.links.webcast} target="_blank" rel="noopener noreferrer" className="text-blue-600">Watch the launch video</a>
+            </li>
+          )}
+        </ul>
       </div>
     </div>
   );
