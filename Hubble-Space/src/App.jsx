@@ -7,7 +7,6 @@ import Apod from './assets/components/scienceComponent/Apod';
 import SpaceXmission from './assets/components/scienceComponent/SpaceXmission';
 import MissionSummarize from './assets/components/scienceComponent/MissionSummarize'; // Added
 import PeopleOfNasa from './assets/components/scienceComponent/PeopleOfNasa';
-import Skywatching from './assets/components/scienceComponent/Skywatching';
 import ApodDetail from './assets/components/scienceComponent/ApodDetail';
 import Footer from './assets/components/Footer';
 import './index.css';
@@ -25,7 +24,6 @@ function App() {
           <Route path="/science/spacex-mission" element={<SpaceXmission />} />
           <Route path="/science/mission-summarize/:id" element={<MissionSummarize />} /> {/* Dynamic Route */}
           <Route path="/science/people-of-nasa" element={<PeopleOfNasa />} />
-          <Route path="/science/skywatching" element={<Skywatching />} />
         </Routes>
         <Footer />
       </div>

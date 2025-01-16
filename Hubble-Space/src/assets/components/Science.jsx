@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 const apodImage = 'https://cdn.pixabay.com/photo/2016/03/08/20/03/flag-1244649_640.jpg'; 
 const spacexImage = 'https://cdn.pixabay.com/photo/2016/03/08/20/03/flag-1244649_640.jpg';
 const nasaImage = 'https://cdn.pixabay.com/photo/2016/03/08/20/03/flag-1244649_640.jpg'; 
-const skywatchingImage = 'https://cdn.pixabay.com/photo/2016/03/08/20/03/flag-1244649_640.jpg'; 
 
 const Science = () => {
   const navigate = useNavigate(); // Use the useNavigate hook
@@ -30,12 +29,7 @@ const Science = () => {
       image: nasaImage, 
       link: "/science/people-of-nasa" // Link to People of NASA detail page
     }, 
-    { 
-      id: 4, 
-      title: "Skywatching", 
-      image: skywatchingImage, 
-      link: "/science/skywatching" // Link to Skywatching detail page
-    }, 
+  
   ];
 
   const handleCardClick = (link) => {
